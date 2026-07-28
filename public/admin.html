@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeepXception — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080c10; --surface: #0f1419; --surface2: #131920;
+      --border: #1e2730; --accent: #00e5ff; --accent2: #ff3b6b;
+      --green: #00ff88; --yellow: #ffd166; --text: #c8d6e5; --muted: #4a5568;
+      --font-mono: 'Share Tech Mono', monospace; --font-body: 'DM Sans', sans-serif;
+    }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--font-body);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; padding: 40px 20px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: linear-gradient(rgba(0,229,255,.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .container { width: 100%; max-width: 860px; position: relative; z-index: 1; }
+
+    header { text-align: center; margin-bottom: 40px; }
+    .logo-tag {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 10px; opacity: .8;
+    }
+    h1 { font-family: var(--font-mono); font-size: 32px; font-weight: 400; color: #fff; }
+    h1 span { color: var(--accent); }
+
+    .nav {
+      display: flex; gap: 12px; justify-content: center; margin-bottom: 36px;
+    }
+    .nav a {
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px;
+      padding: 8px 18px; border-radius: 3px; text-decoration: none;
+      border: 1px solid var(--border); color: var(--muted);
+      transition: all .2s;
+    }
+    .nav a:hover { border-color: var(--accent); color: var(--accent); }
+    .nav a.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,.06); }
+
+    .section-label {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 16px;
+    }
+
+    .stats-row {
+      display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1; min-width: 120px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 16px 20px;
+    }
+    .stat-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); }
+    .stat-value { font-family: var(--font-mono); font-size: 28px; color: var(--accent); margin-top: 6px; }
+
+    .users-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .user-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 20px;
+      display: flex; gap: 16px; align-items: flex-start;
+      animation: fadeUp .3s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .user-avatar {
+      width: 64px; height: 64px; border-radius: 4px; object-fit: cover;
+      border: 1px solid var(--border); flex-shrink: 0;
+      background: var(--surface2);
+    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name {
+      font-family: var(--font-mono); font-size: 14px; color: #fff;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .user-email { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .user-id { font-family: var(--font-mono); font-size: 10px; color: var(--border); margin-top: 6px; }
+
+    .badge {
+      display: inline-block; font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 1px; padding: 2px 8px; border-radius: 2px; margin-top: 8px;
+    }
+    .badge.done    { color: var(--green);  background: rgba(0,255,136,.07);  border: 1px solid rgba(0,255,136,.2); }
+    .badge.pending { color: var(--yellow); background: rgba(255,209,102,.07); border: 1px solid rgba(255,209,102,.2); }
+    .badge.failed  { color: var(--accent2); background: rgba(255,59,107,.07); border: 1px solid rgba(255,59,107,.2); }
+
+    .loader-text {
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px;
+      color: var(--muted); text-align: center; padding: 40px;
+      animation: blink 1.4s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .error-card {
+      padding: 16px 20px; background: rgba(255,59,107,.06);
+      border: 1px solid rgba(255,59,107,.25); border-radius: 4px;
+      color: var(--accent2); font-family: var(--font-mono); font-size: 13px;
+    }
+    .empty {
+      font-family: var(--font-mono); font-size: 13px; color: var(--muted);
+      text-align: center; padding: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-tag">// admin panel</div>
+      <h1>Deep<span>Xception</span></h1>
+    </header>
+
+    <nav class="nav">
+      <a href="http://localhost:5000">Detector</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="admin.html" class="active">Admin</a>
+    </nav>
+
+    <div class="section-label">Registered users</div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="totalUsers">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Embeddings Ready</div>
+        <div class="stat-value" id="embeddingsDone">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="embeddingsPending">—</div>
+      </div>
+    </div>
+
+    <div id="content">
+      <div class="loader-text">LOADING USERS...</div>
+    </div>
+  </div>
+
+  <script>
+    // ── Point this at your Node server port ──────────────────────────────────
+    const API = "http://localhost:8000"
+
+    async function load() {
+      const content = document.getElementById("content")
+      try {
+        const res = await fetch(`${API}/users`)
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const users = await res.json()
+
+        if (users.error) {
+          content.innerHTML = `<div class="error-card">⚠ ${users.error}</div>`
+          return
+        }
+
+        // Stats
+        document.getElementById("totalUsers").textContent = users.length
+        document.getElementById("embeddingsDone").textContent =
+          users.filter(u => u.embedding_status === "done").length
+        document.getElementById("embeddingsPending").textContent =
+          users.filter(u => u.embedding_status !== "done").length
+
+        if (users.length === 0) {
+          content.innerHTML = `<div class="empty">No users registered yet.</div>`
+          return
+        }
+
+        // Cards
+        const grid = document.createElement("div")
+        grid.className = "users-grid"
+
+        users.forEach(u => {
+          const card = document.createElement("div")
+          card.className = "user-card"
+          const statusClass = u.embedding_status === "done" ? "done"
+                            : u.embedding_status === "failed" ? "failed" : "pending"
+          card.innerHTML = `
+            <img class="user-avatar"
+                 src="${API}/uploads/${encodeURIComponent(u.face)}"
+                 onerror="this.style.opacity='.2'"
+                 alt="${u.username}">
+            <div class="user-info">
+              <div class="user-name">${u.username}</div>
+              <div class="user-email">${u.email}</div>
+              <div class="user-id">#${u.id}</div>
+              <span class="badge ${statusClass}">
+                ${u.embedding_status === "done" ? "✓ EMBEDDING READY"
+                : u.embedding_status === "failed" ? "✕ EMBEDDING FAILED"
+                : "⏳ PENDING"}
+              </span>
+            </div>
+          `
+          grid.appendChild(card)
+        })
+
+        content.innerHTML = ""
+        content.appendChild(grid)
+
+      } catch (err) {
+        content.innerHTML = `<div class="error-card">⚠ Could not reach server at ${API}<br>Make sure node server.js is running on port 8000.</div>`
+      }
+    }
+
+    load()
+  </script>
+</body>
+</html>

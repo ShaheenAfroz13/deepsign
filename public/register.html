@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeepXception — Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080c10; --surface: #0f1419; --surface2: #131920;
+      --border: #1e2730; --accent: #00e5ff; --accent2: #ff3b6b;
+      --green: #00ff88; --yellow: #ffd166; --text: #c8d6e5; --muted: #4a5568;
+      --font-mono: 'Share Tech Mono', monospace; --font-body: 'DM Sans', sans-serif;
+    }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--font-body);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: linear-gradient(rgba(0,229,255,.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .container { width: 100%; max-width: 420px; position: relative; z-index: 1; }
+
+    header { text-align: center; margin-bottom: 36px; }
+    .logo-tag {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 10px; opacity: .8;
+    }
+    h1 { font-family: var(--font-mono); font-size: 28px; font-weight: 400; color: #fff; }
+    h1 span { color: var(--accent); }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 32px;
+    }
+    .card-title {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 24px;
+    }
+
+    .field { margin-bottom: 18px; }
+    label {
+      display: block; font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 2px; color: var(--muted); margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 10px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 3px; color: var(--text); font-family: var(--font-mono);
+      font-size: 13px; outline: none; transition: border-color .2s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    /* Face upload zone */
+    .face-upload {
+      border: 1.5px dashed var(--border); border-radius: 3px;
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s; position: relative;
+    }
+    .face-upload:hover { border-color: var(--accent); background: rgba(0,229,255,.02); }
+    .face-upload input { display: none; }
+    .face-upload-label {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+      color: var(--muted);
+    }
+    .face-upload-label span { color: var(--accent); }
+    .face-preview {
+      display: none; width: 80px; height: 80px;
+      border-radius: 4px; object-fit: cover;
+      border: 1px solid var(--accent); margin: 0 auto 8px;
+    }
+    .face-preview.visible { display: block; }
+    .face-filename {
+      font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+      margin-top: 6px; display: none;
+    }
+    .face-filename.visible { display: block; }
+
+    .submit-btn {
+      width: 100%; margin-top: 8px; padding: 13px;
+      background: var(--accent); color: #000; border: none; border-radius: 3px;
+      font-family: var(--font-mono); font-size: 13px; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer; transition: opacity .2s;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: .85; }
+    .submit-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .msg {
+      margin-top: 16px; padding: 12px 14px; border-radius: 3px;
+      font-family: var(--font-mono); font-size: 12px; display: none;
+      line-height: 1.6;
+    }
+    .msg.error   { background: rgba(255,59,107,.07); border: 1px solid rgba(255,59,107,.25); color: var(--accent2); display: block; }
+    .msg.success { background: rgba(0,255,136,.07);  border: 1px solid rgba(0,255,136,.2);  color: var(--green);   display: block; }
+    .msg.info    { background: rgba(255,209,102,.07); border: 1px solid rgba(255,209,102,.2); color: var(--yellow); display: block; }
+
+    .footer-link {
+      text-align: center; margin-top: 20px;
+      font-size: 12px; color: var(--muted);
+    }
+    .footer-link a { color: var(--accent); text-decoration: none; }
+    .footer-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-tag">// new account</div>
+      <h1>Deep<span>Xception</span></h1>
+    </header>
+
+    <div class="card">
+      <div class="card-title">Create account</div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="johndoe"/>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="field">
+        <label>Face photo</label>
+        <div class="face-upload" id="faceZone">
+          <input type="file" id="faceInput" accept="image/*"/>
+          <img class="face-preview" id="facePreview" alt="preview"/>
+          <div class="face-upload-label">
+            <span>Click to upload</span> a clear photo of your face
+          </div>
+          <div class="face-filename" id="faceFilename"></div>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="registerBtn">Register</button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="footer-link">
+      Already registered? <a href="login.html">Sign in</a>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:8000"
+
+    const faceZone     = document.getElementById("faceZone")
+    const faceInput    = document.getElementById("faceInput")
+    const facePreview  = document.getElementById("facePreview")
+    const faceFilename = document.getElementById("faceFilename")
+    const btn          = document.getElementById("registerBtn")
+    const msg          = document.getElementById("msg")
+
+    function showMsg(text, type) {
+      msg.textContent = text
+      msg.className = "msg " + type
+    }
+
+    // Face upload preview
+    faceZone.addEventListener("click", () => faceInput.click())
+    faceInput.addEventListener("change", () => {
+      const file = faceInput.files[0]
+      if (!file) return
+      faceFilename.textContent = file.name
+      faceFilename.classList.add("visible")
+      const reader = new FileReader()
+      reader.onload = e => {
+        facePreview.src = e.target.result
+        facePreview.classList.add("visible")
+      }
+      reader.readAsDataURL(file)
+    })
+
+    btn.addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim()
+      const email    = document.getElementById("email").value.trim()
+      const password = document.getElementById("password").value
+      const face     = faceInput.files[0]
+
+      if (!username || !email || !password) {
+        showMsg("⚠ All fields are required", "error"); return
+      }
+      if (!face) {
+        showMsg("⚠ Please upload a face photo", "error"); return
+      }
+
+      btn.disabled = true
+      btn.textContent = "REGISTERING..."
+      showMsg("Uploading — face embedding will be generated in the background...", "info")
+
+      const data = new FormData()
+      data.append("username", username)
+      data.append("email", email)
+      data.append("password", password)
+      data.append("face", face)
+
+      try {
+        const res = await fetch(`${API}/register`, { method: "POST", body: data })
+        const result = await res.json()
+
+        if (result.success) {
+          showMsg(`✓ Registered as ${result.username} (id: ${result.id})\nFace embedding is being generated — this takes ~10 seconds.`, "success")
+          btn.textContent = "REGISTERED"
+
+          // Poll for embedding status
+          pollEmbeddingStatus(result.id)
+        } else {
+          showMsg("⚠ " + (result.error || "Registration failed"), "error")
+          btn.disabled = false
+          btn.textContent = "REGISTER"
+        }
+      } catch (err) {
+        showMsg("⚠ Could not reach server. Is node server.js running?", "error")
+        btn.disabled = false
+        btn.textContent = "REGISTER"
+      }
+    })
+
+    async function pollEmbeddingStatus(userId) {
+      let attempts = 0
+      const max = 20  // poll for up to ~60 seconds
+      const interval = setInterval(async () => {
+        attempts++
+        try {
+          const res = await fetch(`${API}/users/${userId}/embedding-status`)
+          const data = await res.json()
+          if (data.status === "done") {
+            clearInterval(interval)
+            showMsg("✓ Registration complete — face embedding ready. You can now log in.", "success")
+          } else if (data.status === "failed") {
+            clearInterval(interval)
+            showMsg("⚠ Registered but face embedding failed. Identity matching won't work for this account.", "error")
+          } else if (attempts >= max) {
+            clearInterval(interval)
+          }
+        } catch { clearInterval(interval) }
+      }, 3000)
+    }
+  </script>
+</body>
+</html>

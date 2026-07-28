@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeepXception — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080c10; --surface: #0f1419; --surface2: #131920;
+      --border: #1e2730; --accent: #00e5ff; --accent2: #ff3b6b;
+      --green: #00ff88; --text: #c8d6e5; --muted: #4a5568;
+      --font-mono: 'Share Tech Mono', monospace; --font-body: 'DM Sans', sans-serif;
+    }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--font-body);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: linear-gradient(rgba(0,229,255,.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .container { width: 100%; max-width: 400px; position: relative; z-index: 1; }
+
+    header { text-align: center; margin-bottom: 36px; }
+    .logo-tag {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 10px; opacity: .8;
+    }
+    h1 { font-family: var(--font-mono); font-size: 28px; font-weight: 400; color: #fff; }
+    h1 span { color: var(--accent); }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 32px;
+    }
+    .card-title {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 24px;
+    }
+
+    .field { margin-bottom: 18px; }
+    label {
+      display: block; font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 2px; color: var(--muted); margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    input {
+      width: 100%; padding: 10px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 3px; color: var(--text); font-family: var(--font-mono);
+      font-size: 13px; outline: none; transition: border-color .2s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    .submit-btn {
+      width: 100%; margin-top: 8px; padding: 13px;
+      background: var(--accent); color: #000; border: none; border-radius: 3px;
+      font-family: var(--font-mono); font-size: 13px; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer; transition: opacity .2s;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: .85; }
+    .submit-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .msg {
+      margin-top: 16px; padding: 12px 14px; border-radius: 3px;
+      font-family: var(--font-mono); font-size: 12px; display: none;
+    }
+    .msg.error   { background: rgba(255,59,107,.07); border: 1px solid rgba(255,59,107,.25); color: var(--accent2); display: block; }
+    .msg.success { background: rgba(0,255,136,.07);  border: 1px solid rgba(0,255,136,.2);  color: var(--green);   display: block; }
+
+    .footer-link {
+      text-align: center; margin-top: 20px;
+      font-size: 12px; color: var(--muted);
+    }
+    .footer-link a { color: var(--accent); text-decoration: none; }
+    .footer-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-tag">// access control</div>
+      <h1>Deep<span>Xception</span></h1>
+    </header>
+
+    <div class="card">
+      <div class="card-title">Sign in</div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+
+      <button class="submit-btn" id="loginBtn">Login</button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="footer-link">
+      No account? <a href="register.html">Register here</a>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:8000"
+
+    const emailEl = document.getElementById("email")
+    const passEl  = document.getElementById("password")
+    const btn     = document.getElementById("loginBtn")
+    const msg     = document.getElementById("msg")
+
+    function showMsg(text, type) {
+      msg.textContent = text
+      msg.className = "msg " + type
+    }
+
+    btn.addEventListener("click", async () => {
+      const email    = emailEl.value.trim()
+      const password = passEl.value
+
+      if (!email || !password) {
+        showMsg("Email and password are required", "error")
+        return
+      }
+
+      btn.disabled = true
+      btn.textContent = "SIGNING IN..."
+
+      try {
+        const res = await fetch(`${API}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        })
+        const data = await res.json()
+
+        if (data.success) {
+          showMsg("✓ Login successful — redirecting...", "success")
+          setTimeout(() => window.location.href = "admin.html", 800)
+        } else {
+          showMsg("⚠ " + (data.error || "Invalid credentials"), "error")
+          btn.disabled = false
+          btn.textContent = "LOGIN"
+        }
+      } catch (err) {
+        showMsg("⚠ Could not reach server. Is node server.js running?", "error")
+        btn.disabled = false
+        btn.textContent = "LOGIN"
+      }
+    })
+
+    // Allow Enter key to submit
+    ;[emailEl, passEl].forEach(el =>
+      el.addEventListener("keydown", e => { if (e.key === "Enter") btn.click() })
+    )
+  </script>
+</body>
+</html>
